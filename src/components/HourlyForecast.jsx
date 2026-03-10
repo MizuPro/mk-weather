@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getWeatherCondition, formatTime } from '../utils/weatherHelpers';
 import * as Icons from 'lucide-react';
@@ -6,6 +6,11 @@ import * as Icons from 'lucide-react';
 const HourlyForecast = ({ data }) => {
   const scrollRef = useRef(null);
   const currentHourRef = useRef(null);
+
+  // States for mouse drag-to-scroll
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   if (!data || !data.hourly) return null;
 
@@ -45,13 +50,38 @@ const HourlyForecast = ({ data }) => {
     }
   }, [data]);
 
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll-fast multiplier
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto mt-8 mb-8 px-4">
       <h3 className="text-lg sm:text-xl font-medium mb-4 text-white/90">Prakiraan Hari Ini</h3>
       <motion.div
         ref={scrollRef}
-        className="flex overflow-x-auto space-x-3 sm:space-x-4 pb-4 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory"
-        whileTap={{ cursor: "grabbing" }}
+        className={`flex overflow-x-auto space-x-3 sm:space-x-4 pb-4 no-scrollbar ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} snap-x snap-mandatory`}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
       >
         {todaysHours.map((hour, index) => {
           const condition = getWeatherCondition(hour.code);
