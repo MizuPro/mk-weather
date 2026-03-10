@@ -36,15 +36,15 @@ const CurrentWeather = ({ data, locationName }) => {
         </motion.div>
       </div>
 
-      <div className="flex flex-col items-center">
-        <h1 className="text-8xl md:text-9xl font-bold tracking-tighter drop-shadow-lg flex items-start">
+      <div className="flex flex-col items-center text-center px-4">
+        <h1 className="text-7xl sm:text-8xl md:text-9xl font-bold tracking-tighter drop-shadow-lg flex items-start">
           {Math.round(current.temperature_2m)}
-          <span className="text-4xl md:text-5xl font-normal mt-2">°</span>
+          <span className="text-3xl sm:text-4xl md:text-5xl font-normal mt-2">°</span>
         </h1>
-        <p className="text-xl md:text-2xl font-light mt-2 tracking-wide text-white/90">
+        <p className="text-lg sm:text-xl md:text-2xl font-light mt-2 tracking-wide text-white/90">
           {condition.label}
         </p>
-        <p className="text-md text-white/70 mt-1">
+        <p className="text-sm sm:text-md text-white/70 mt-1">
           Terasa seperti {Math.round(current.apparent_temperature)}°
         </p>
       </div>

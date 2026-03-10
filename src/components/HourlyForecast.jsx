@@ -1,50 +1,75 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getWeatherCondition, formatTime } from '../utils/weatherHelpers';
 import * as Icons from 'lucide-react';
 
 const HourlyForecast = ({ data }) => {
   const scrollRef = useRef(null);
+  const currentHourRef = useRef(null);
 
   if (!data || !data.hourly) return null;
 
   const { time, temperature_2m, weather_code, precipitation_probability } = data.hourly;
 
-  // Get next 24 hours
-  const now = new Date();
-  const currentHourIndex = time.findIndex(t => new Date(t) > now);
-  const startIndex = currentHourIndex > 0 ? currentHourIndex - 1 : 0;
-  const next24Hours = Array.from({ length: 24 }).map((_, i) => ({
-    time: time[startIndex + i],
-    temp: temperature_2m[startIndex + i],
-    code: weather_code[startIndex + i],
-    precipProb: precipitation_probability[startIndex + i]
-  })).filter(item => item.time); // filter out undefined if data is short
+  // Get today's 24 hours (00:00 to 23:00) using local time from API to avoid UTC timezone issues
+  const todayDateString = data.current.time.split('T')[0];
+  const todayStartIndex = time.findIndex(t => t.startsWith(todayDateString));
+
+  const todaysHours = Array.from({ length: 24 }).map((_, i) => {
+    const idx = todayStartIndex + i;
+    return {
+      time: time[idx],
+      temp: temperature_2m[idx],
+      code: weather_code[idx],
+      precipProb: precipitation_probability[idx]
+    };
+  }).filter(item => item.time); // filter out undefined just in case
+
+  const currentHour = new Date().getHours();
+
+  useEffect(() => {
+    // Scroll to the current hour when component mounts
+    if (currentHourRef.current && scrollRef.current) {
+      const scrollContainer = scrollRef.current;
+      const targetElement = currentHourRef.current;
+
+      // Calculate position to center the current hour item
+      const containerHalfWidth = scrollContainer.clientWidth / 2;
+      const targetHalfWidth = targetElement.clientWidth / 2;
+      const scrollPosition = targetElement.offsetLeft - containerHalfWidth + targetHalfWidth;
+
+      scrollContainer.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [data]);
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-8 mb-8 px-4">
-      <h3 className="text-xl font-medium mb-4 text-white/90">Prakiraan 24 Jam</h3>
+      <h3 className="text-lg sm:text-xl font-medium mb-4 text-white/90">Prakiraan Hari Ini</h3>
       <motion.div
         ref={scrollRef}
-        className="flex overflow-x-auto space-x-4 pb-4 no-scrollbar cursor-grab active:cursor-grabbing"
-        drag="x"
-        dragConstraints={scrollRef}
+        className="flex overflow-x-auto space-x-3 sm:space-x-4 pb-4 no-scrollbar cursor-grab active:cursor-grabbing snap-x snap-mandatory"
         whileTap={{ cursor: "grabbing" }}
       >
-        {next24Hours.map((hour, index) => {
+        {todaysHours.map((hour, index) => {
           const condition = getWeatherCondition(hour.code);
           const IconComponent = Icons[condition.icon] || Icons.HelpCircle;
+
+          const isCurrentHour = index === currentHour;
 
           return (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.5 }}
-              className="glass-card min-w-[80px] p-4 flex flex-col items-center justify-between space-y-3 flex-shrink-0"
+              ref={isCurrentHour ? currentHourRef : null}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className={`glass-card min-w-[70px] sm:min-w-[80px] p-3 sm:p-4 flex flex-col items-center justify-between space-y-3 flex-shrink-0 snap-center ${isCurrentHour ? 'border-white/50 bg-white/20 scale-105' : ''}`}
             >
-              <div className="text-sm font-medium text-white/80">
-                {index === 0 ? 'Sekarang' : formatTime(hour.time)}
+              <div className={`text-xs sm:text-sm font-medium ${isCurrentHour ? 'text-white' : 'text-white/80'}`}>
+                {isCurrentHour ? 'Sekarang' : formatTime(hour.time)}
               </div>
 
               <div className="relative group">

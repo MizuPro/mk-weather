@@ -26,8 +26,8 @@ const WeatherDetails = ({ data }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-12 mb-8">
-      <h3 className="text-xl font-medium mb-4 px-4 text-white/90">Detail Cuaca</h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 px-4">
+      <h3 className="text-lg sm:text-xl font-medium mb-4 px-4 text-white/90">Detail Cuaca</h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 px-4">
         <DetailCard
           icon={Droplets}
           label="Kelembapan"
