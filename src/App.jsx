@@ -69,11 +69,11 @@ function App() {
             </motion.div>
           ) : data ? (
             <motion.div
-              key="content"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6, staggerChildren: 0.1 }}
+              key={locationName}
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.6, ease: "easeInOut", staggerChildren: 0.1 }}
               className="w-full flex flex-col"
             >
               <CurrentWeather data={data} locationName={locationName} />

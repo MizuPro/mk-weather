@@ -72,10 +72,11 @@ const SearchBar = ({ onLocationSelect, onUseCurrentLocation }) => {
         )}
         <button
           onClick={onUseCurrentLocation}
-          className="p-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all flex items-center justify-center group"
-          title="Gunakan Lokasi Saat Ini"
+          className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all flex items-center justify-center space-x-2 group whitespace-nowrap"
+          title="Kembali ke Lokasi Sendiri"
         >
-          <MapPin size={20} className="text-white group-hover:scale-110 transition-transform" />
+          <MapPin size={18} className="text-white group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-medium text-white hidden sm:block">Lokasi Saya</span>
         </button>
       </motion.div>
 
