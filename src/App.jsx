@@ -29,6 +29,10 @@ function App() {
       <Background conditionColor={getConditionColor()} />
 
       <main className="container mx-auto px-4 py-8 max-w-7xl relative z-10 flex flex-col items-center">
+        <div className="flex flex-col items-center mb-6">
+          <img src="/logo.png" alt="mk-WEATHER Logo" className="w-24 h-24 object-contain rounded-3xl shadow-lg" />
+        </div>
+
         <SearchBar
           onLocationSelect={handleLocationSelect}
           onUseCurrentLocation={getLocation}
