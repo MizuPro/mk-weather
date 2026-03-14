@@ -32,23 +32,15 @@ const Background = ({ conditionColor }) => {
         />
       </AnimatePresence>
 
-      {/* Animated ambient background elements */}
-      <div className="absolute inset-0 opacity-30">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl"
+      {/* Ambient background elements, using CSS animations for performance instead of framer-motion and heavy blur filters */}
+      <div className="absolute inset-0 opacity-40 pointer-events-none overflow-hidden">
+        <div
+          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full animate-pulse-slow origin-center will-change-transform"
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)' }}
         />
-        <motion.div
-          animate={{
-            scale: [1, 1.5, 1],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-white rounded-full mix-blend-overlay filter blur-3xl"
+        <div
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] rounded-full animate-pulse-slower origin-center will-change-transform"
+          style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)', animationDelay: '2s' }}
         />
       </div>
     </div>
