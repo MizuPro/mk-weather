@@ -28,12 +28,9 @@ const CurrentWeather = ({ data, locationName }) => {
       </div>
 
       <div className="relative">
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        >
+        <div className="animate-float will-change-transform">
           <IconComponent size={120} strokeWidth={1} className="drop-shadow-2xl text-white" />
-        </motion.div>
+        </div>
       </div>
 
       <div className="flex flex-col items-center text-center px-4">
